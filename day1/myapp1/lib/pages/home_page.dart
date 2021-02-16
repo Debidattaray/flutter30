@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:myapp1/widgets/drawer.dart';
 
 class MyHomePage extends StatelessWidget {
   @override
@@ -18,7 +19,7 @@ class MyHomePage extends StatelessWidget {
             style: TextStyle(fontSize: 40,color: Colors.amber),),
         ),
       ),
-      drawer: Drawer(),
+      drawer: MyDrawer(),
 
     );
     // int days = 20;
