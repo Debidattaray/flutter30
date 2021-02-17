@@ -1,22 +1,8 @@
+import 'dart:convert';
 
-class CatalogModel{
-  
-static final item = [
-  Item(
-      id: 434,
-      name: "VIVO Phone",
-      desc: "this and that ",
-      price: 999,
-      color: "red",
-      image:
-      "data:image/jpeg;base64,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" , 
-  )
-  
-  ];
- 
+class CatalogModel {
+  static  List<Item> items;
 }
-
-
 
 class Item {
   final int id;
@@ -26,5 +12,86 @@ class Item {
   final String color;
   final String image;
 
-  Item({this.id, this.name, this.desc, this.price, this.color, this.image});
+  Item({
+    this.id,
+    this.name,
+    this.desc,
+    this.price,
+    this.color,
+    this.image,
+  });
+
+  Item copyWith({
+    int id,
+    String name,
+    String desc,
+    num price,
+    String color,
+    String image,
+  }) {
+    return Item(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      desc: desc ?? this.desc,
+      price: price ?? this.price,
+      color: color ?? this.color,
+      image: image ?? this.image,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'name': name,
+      'desc': desc,
+      'price': price,
+      'color': color,
+      'image': image,
+    };
+  }
+
+  factory Item.fromMap(Map<String, dynamic> map) {
+    if (map == null) return null;
+  
+    return Item(
+      id: map['id'],
+      name: map['name'],
+      desc: map['desc'],
+      price: map['price'],
+      color: map['color'],
+      image: map['image'],
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory Item.fromJson(String source) => Item.fromMap(json.decode(source));
+
+  @override
+  String toString() {
+    return 'Item(id: $id, name: $name, desc: $desc, price: $price, color: $color, image: $image)';
+  }
+
+  @override
+  bool operator ==(Object o) {
+    if (identical(this, o)) return true;
+  
+    return o is Item &&
+      o.id == id &&
+      o.name == name &&
+      o.desc == desc &&
+      o.price == price &&
+      o.color == color &&
+      o.image == image;
+  }
+
+  @override
+  int get hashCode {
+    return id.hashCode ^
+      name.hashCode ^
+      desc.hashCode ^
+      price.hashCode ^
+      color.hashCode ^
+      image.hashCode;
+  }
 }
