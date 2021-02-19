@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:myapp1/models/catalog.dart';
-import 'package:myapp1/models/catalog.dart';
 import 'package:myapp1/widgets/drawer.dart';
 import 'package:myapp1/widgets/item_widget.dart';
+import 'package:myapp1/widgets/thems.dart';
 import 'dart:convert';
+import 'package:velocity_x/velocity_x.dart';
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -32,77 +33,112 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Catalog App"),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: (CatalogModel.items != null && CatalogModel.items.isNotEmpty)
-            ? GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2 ,
-                    crossAxisSpacing: 15,
-                    mainAxisSpacing: 10),
-                itemBuilder: (context, index) {
-                  final item = CatalogModel.items[index];
-                  return Card(
-                    clipBehavior: Clip.antiAlias
-                    ,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)
-                    ),
-                    child: GridTile(
-                      header: Container(
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: Colors.deepPurple
-                        ),
-                        child: Text(item.name,
-                        style: TextStyle(color: Colors.white),),),
-                      child: Image.network(item.image),
-                      footer: Container(
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: Colors.deepPurple
-                        ),
-                        child: Text(item.price.toString(),
-                        style: TextStyle(color: Colors.white),),)
-                      ));
-                },
-                itemCount: CatalogModel.items.length,
-              )
-            : Center(
-                child: CircularProgressIndicator(),
-              ),
-      ),
-      drawer: MyDrawer(),
+        backgroundColor: MyTheme.creamColor,
+        body: SafeArea(
+          child: Container(
+            padding: Vx.m32,
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              CatalogHeader(),
+              if (CatalogModel.items != null && CatalogModel.items.isNotEmpty)
+                CatalogList().expand()
+              else
+                Center(child: CircularProgressIndicator()),
+            ]),
+          ),
+        ));
+  }
+}
+
+class CatalogHeader extends StatelessWidget {
+  // const CatalogHeader({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        "catalogApp".text.xl3.color(MyTheme.darkBluishColor).make(),
+        "Trending products".text.xl2.make(),
+      ],
     );
+  }
+}
 
-    // ListView.builder(
-    // itemCount: CatalogModel.item.length,
-    // itemCount: CatalogModel.items.length,
-    // itemBuilder: (context, index) {
-    // return ItemWidget(
-    // item: CatalogModel.items[index],
-    // );
-    // },
-    // )
-    // int days = 20;
-    // String name = "codepur";
-    // double dd = 1.2;
-    // num aa = 9.0;
-    // var day = 2;
-    // const pi = 3.14;
-    // final additionAllowed = 7;
+class CatalogList extends StatelessWidget {
+  // const CatalogList({Key key}) : super(key: key);
 
-    // return MaterialApp(
-    //   home: Material(
-    //     child: Center(
-    //       child: Container(
-    //         child: Text("Welcome to $days one of ($name,$dd,$aa,$day,$pi,$additionAllowed) flutter gittt"),
-    //       ),
-    //     ),
-    //   ),
-    // );
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      shrinkWrap: true,
+      itemCount: CatalogModel.items.length,
+      itemBuilder: (context, index) {
+        final catalog = CatalogModel.items[index];
+        return Catalogitem(catalog: catalog);
+      },
+    );
+  }
+}
+
+class Catalogitem extends StatelessWidget {
+  final Item catalog;
+
+  const Catalogitem({Key key, @required this.catalog})
+      : assert(catalog != null),
+        super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return VxBox(
+        child: Row(
+      children: [
+        CatalogImage(
+          image: catalog.image,
+        ),
+        Expanded(
+            child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            catalog.name.text.lg.color(MyTheme.darkBluishColor).bold.make(),
+            catalog.desc.text.textStyle(context.captionStyle).make(),
+            10.heightBox,
+            ButtonBar(
+              alignment: MainAxisAlignment.spaceBetween,
+              buttonPadding: EdgeInsets.zero,
+              children: [
+                "\$${catalog.price}".text.bold.xl.make(),
+                ElevatedButton(onPressed: (){}, 
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(
+                    MyTheme.darkBluishColor,
+                    ),
+                    shape: MaterialStateProperty.all(StadiumBorder(),)
+                ),
+                
+                child: "Buy".text.make())
+              ],
+            ).pOnly(right: 8.0)
+          ],
+        ))
+      ],
+    )).white.rounded.square(150).make().py16();
+  }
+}
+
+class CatalogImage extends StatelessWidget {
+  final String image;
+
+  const CatalogImage({Key key, @required this.image}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Image.network(image)
+        .box
+        .roundedLg
+        .p8
+        .color(MyTheme.creamColor)
+        .make()
+        .p16()
+        .w40(context);
   }
 }
