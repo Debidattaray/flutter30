@@ -18,6 +18,7 @@ samp ... ,guidance on mobile development, and a full API reference.
 
 Debidatta 
 <<<<<<< HEAD
+<<<<<<< HEAD
 d2
 =======
 d2
@@ -25,3 +26,8 @@ d3
 d4
 d5
 >>>>>>> origin/day2
+=======
+d2
+d3
+d4
+>>>>>>> day1
